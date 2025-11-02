@@ -302,15 +302,19 @@
               let trackInfo = {"name": track_data.name, "uri": track_data.uri, "trackCount": albumTracks.total, "type": array[i][2], "index": tracksAdd.length+"_"+albumTracksAdd.length, "isrc": track_data.external_ids.isrc};
               let playlist_tracks_index = await getIndexFrom2dArray(tracks, track_data.external_ids.isrc);
               if (playlist_tracks_index){
-                if(CONFIG["trackPriority"] == "trackCount" && (array[i][2] != "compilation" && (tracks[playlist_tracks_index].type == "compilation" || albumTracks.total > tracks[playlist_tracks_index].trackCount))){
+                if(CONFIG["trackPriority"] == "trackCount" && (array[i][2] != "compilation" && (tracks[playlist_tracks_index].type == "compilation" || (tracks[playlist_tracks_index].type != "compilation" && albumTracks.total > tracks[playlist_tracks_index].trackCount)))){
                   let removeIndex = (tracks[playlist_tracks_index].index).split("_");
                   tracks.splice(playlist_tracks_index,1,{});
                   if (tracksAdd.length > removeIndex[0]) tracksAdd[removeIndex[0]].splice(removeIndex[1],1,"remove");
                   else albumTracksAdd.splice(removeIndex[1],1,"remove");
+                  tracks.push(trackInfo);
+                  albumTracksAdd.push(trackInfo.uri);
                 }
               }
-              tracks.push(trackInfo);
-              albumTracksAdd.push(trackInfo.uri);
+              else {
+                tracks.push(trackInfo);
+                albumTracksAdd.push(trackInfo.uri);
+              }
             }
             else {
               albumTracksAdd.push(albumTracks.items[r].uri);
