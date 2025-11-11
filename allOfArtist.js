@@ -330,7 +330,7 @@
             }
           }
           if (!tracks.next) break;
-          tracks = await CosmosAsync.get(album.tracks.next);
+          tracks = await CosmosAsync.get(tracks.next);
         } while (true)
       };
     }
