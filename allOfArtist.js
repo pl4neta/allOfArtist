@@ -253,7 +253,7 @@
       if(array[i].isrc == key)
         return i;
     }
-    return false;
+    return -1;
   }
 
   async function addTracks(playlistId, playlists, artistData, user){
@@ -305,7 +305,7 @@
                 let track_data = await CosmosAsync.get('https://api.spotify.com/v1/tracks/'+track.id);
                 let trackInfo = {"name": track_data.name, "uri": track_data.uri, "trackCount": tracks.total, "type": album.album_type, "index": tracksAdd.length+"_"+albumTracksAdd.length, "isrc": track_data.external_ids.isrc};
                 let playlist_tracks_index = await getIndexFrom2dArray(track_history, track_data.external_ids.isrc);
-                if (playlist_tracks_index){
+                if (playlist_tracks_index >= 0){
                   if(CONFIG["trackPriority"] == "trackCount" && (album.album_type != "compilation" && (track_history[playlist_tracks_index].type == "compilation" || (track_history[playlist_tracks_index].type != "compilation" && tracks.total > track_history[playlist_tracks_index].trackCount)))){
                     let removeIndex = (track_history[playlist_tracks_index].index).split("_");
                     track_history.splice(playlist_tracks_index,1,{});
@@ -336,7 +336,7 @@
     }
     if (albumTracksAdd.length > 0) tracksAdd.push(albumTracksAdd);
     for (let i = 0; i < tracksAdd.length; i++) {
-      for (let r = tracksAdd[i].length; r > 0; r--) {
+      for (let r = tracksAdd[i].length - 1; r > 0 - 1; r--) {
         if (tracksAdd[i][r] == "remove") tracksAdd[i].splice(r,1);
       }
     }
